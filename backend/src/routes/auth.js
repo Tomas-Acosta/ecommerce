@@ -3,6 +3,21 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
+const authMiddleware = require('../middlewares/auth');
+
+// Ruta protegida (requiere autenticación)
+router.get("/profile", authMiddleware, async (req, res) => {
+    try {
+      // Buscar al usuario por su ID (req.user contiene el userId decodificado)
+      const user = await User.findById(req.user).select("-password");  // No devolver la contraseña      
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" , user});
+      }
+      res.status(200).json({ user });
+    } catch (error) {
+      res.status(500).json({ message: "Error al obtener el perfil del usuario", error });
+    }
+  });
 
 // Ruta para registrar un nuevo usuario
 router.post('/register', async (req, res) => {
