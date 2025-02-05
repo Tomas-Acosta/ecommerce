@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User', // Relacionado con el usuario que realizo el pedido
         required: true,
     },
     products: [{
-        product: {
+        productId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Product', // Relacionado con los productos en el pedido
             required: true
@@ -36,4 +36,6 @@ const orderSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Order', orderShema);
+const Order = mongoose.model('Order', orderSchema);
+
+module.exports = Order;
