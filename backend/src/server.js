@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/order');
 const connectDB = require('./config/db');
+const cartRoutes = require('./routes/cart');
 
 // Cargar variables de entorno
 dotenv.config();
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
 
 // Puerto donde el servidor escuchará
 const PORT = process.env.PORT || 5000;
