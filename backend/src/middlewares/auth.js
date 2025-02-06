@@ -1,21 +1,23 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const authMiddleware = (req,res, next) => {
-    // Obtenemos el token desde los headers
-    const token = req.headers['x-auth-token'];
-    //Verificamos que el token exista
-    if(!token){
-        return res.status(401).json({ msg: 'No hay token, permiso no valido' });
+const authMiddleware = async (req, res, next) => {
+    let token;
+    console.log(token);
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        try {
+            token = req.headers.authorization.split(' ')[1];
+            console.log(token);
+            const decoded = jwt.decode(token, process.env.JWT_SECRET);
+            console.log(decoded);
+            req.user = await User.findById(decoded.userId).select('-password');
+            next();
+        } catch (error) {
+            return res.status(401).json({ message: 'No autorizado, token inválido' });
+        }
+    } else {
+        return res.status(401).json({ message: 'No autorizado, no hay token' });
     }
-
-    try {
-        // Verificar el token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verificar el token
-        req.user = decoded.id; // Almacenar el id del usuario en la petición
-        next(); // Pasar al siguiente middleware
-    } catch (error) {
-        res.status(401).json({ msg: 'Token no valido' });
-    }
-}
+};
 
 module.exports = authMiddleware;

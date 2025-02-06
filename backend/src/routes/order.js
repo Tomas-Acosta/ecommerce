@@ -2,9 +2,10 @@ const express = require('express');
 const Order = require('../models/Order');
 const Cart = require('../models/Cart');
 const router = express.Router();
+const authMiddleware = require('../middlewares/auth');
 
 // Ruta para crear un nuevo pedido a partir del carrito
-router.post('/', async (req, res) => {
+router.post('/', authMiddleware, async (req, res) => {
     const { userId } = req.body;
 
     try {
@@ -42,7 +43,7 @@ router.post('/', async (req, res) => {
 });
 
 // Ruta para obtener todos los pedidos de un usuario
-router.get('/:userId', async (req, res) => {
+router.get('/:userId', authMiddleware, async (req, res) => {
     const { userId } = req.params;
 
     try {
@@ -57,7 +58,7 @@ router.get('/:userId', async (req, res) => {
 });
 
 // Actualizar el estado de un pedido
-router.put('/:orderId', async (req, res) => {
+router.put('/:orderId', authMiddleware, async (req, res) => {
     const { orderId } = req.params;
     const { status } = req.body;
 
@@ -75,7 +76,7 @@ router.put('/:orderId', async (req, res) => {
 });
 
 // Eliminar un pedido
-router.delete('/:orderId', async (req, res) => {
+router.delete('/:orderId', authMiddleware, async (req, res) => {
     const { orderId } = req.params;
 
     try {
