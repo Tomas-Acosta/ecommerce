@@ -5,11 +5,15 @@ const  Product = () => {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
 
+    console.log('product', product, 'id', id);
+
     useEffect(() => {
         // Simular la llamada a la API para obtener el producto por su ID
         const fetchProduct = async () => {
             try {
+                console.log('product', product);
                 const response = await fetch(`http://localhost:5000/api/products/${id}`);
+                console.log('response', response);
                 const data = await response.json();
                 setProduct(data);
             } catch (error) {
@@ -22,7 +26,7 @@ const  Product = () => {
 
     return (
         <div>
-            {product ? (
+            {product ? ( // Verificar si el producto ha sido cargado
                 <>
                     <img src={product.imageUrl} alt={product.name} />
                     <h1>{product.name}</h1>

@@ -1,13 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState} from 'react'
 import { Link } from 'react-router-dom'
 
 const Home = () => {
-    const products = [
-        { id: 1, name: 'Producto 1', price: 10 },
-        { id: 2, name: 'Producto 2', price: 20 },
-        { id: 3, name: 'Producto 3', price: 30 },
-    ];
+    const [products, setProduct] = useState([]);
 
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/products');
+                const data = await response.json();
+                setProduct(data);
+            } catch (error) {
+                console.error('Error al obtener los productos:', error);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     return (
         <div>
@@ -15,19 +24,13 @@ const Home = () => {
             <div>
                 {products.map(product => (
                     <div key={product.id}>
+                        <img src={product.imageUrl} alt={product.name} />
                         <h2>{product.name}</h2>
                         <p>{product.price}</p>
-                        <Link to={`/product/${product.id}`}>Ver detalles</Link>
+                        <Link to={`/products/${product.id}`}>Ver detalles</Link>
+                        <button>Agregar al carrito</button>
                     </div>
                 ))}
-
-                {/* Aqui va un carrusel de productos destacados*/}
-
-                {/* Aqui va un carrusel de categorias*/}
-
-                {/* Aqui va un carrusel de marcas*/}
-
-
             </div>
         </div>
     )
