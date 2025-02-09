@@ -1,14 +1,15 @@
 import React, { useEffect, useState} from 'react'
+import { use } from 'react';
 import { Link } from 'react-router-dom'
+import axiosInstance from '../utils/axios';
 
 const Home = () => {
     const [products, setProduct] = useState([]);
-
-    useEffect(() => {
+    const [cart, setCart] = useState([]);
+        useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/products');
-                const data = await response.json();
+                const { data } = await axiosInstance.get('/api/products');
                 setProduct(data);
             } catch (error) {
                 console.error('Error al obtener los productos:', error);
@@ -17,6 +18,25 @@ const Home = () => {
 
         fetchProducts();
     }, []);
+
+    const handleAddToCart = async (productId) => {
+        try {
+            const { data: userData  } = await axiosInstance.get('/api/auth/profile'); // Ruta de la API para obtener el perfil del usuario
+            const userId = userData.user._id; // Obtener el ID del usuario
+
+            if (!userId) {
+                throw new Error('No se pudo obtener el ID del usuario');
+            }
+            const {data: response} = await axiosInstance.post('/api/cart', { 
+                userId,
+                productId,
+                quantity: 1
+             }); // Ruta de la API para agregar el producto al carrito
+        } catch (error) {
+            console.error('Error en la solicitud de agregar al carrito:', error);
+        }
+    }
+
 
     return (
         <div>
@@ -27,8 +47,8 @@ const Home = () => {
                         <img src={product.imageUrl} alt={product.name} />
                         <h2>{product.name}</h2>
                         <p>{product.price}</p>
-                        <Link to={`/products/${product.id}`}>Ver detalles</Link>
-                        <button>Agregar al carrito</button>
+                        <Link to={`/products/${product._id}`}>Ver detalles</Link>
+                        <button onClick={() => handleAddToCart(product._id)}>Agregar al carrito</button>
                     </div>
                 ))}
             </div>

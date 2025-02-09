@@ -4,8 +4,6 @@ import { useAuth } from '../context/AuthContext'; // Importa el hook useAuth par
 
 const PrivateRoute = ({ children }) => {
     const { isAuthenticated } = useAuth(); // Verifica el estado de autenticación
-    console.log('isAuthenticated',isAuthenticated);
-
     return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
